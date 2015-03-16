@@ -1,0 +1,16 @@
+---
+
+- name: load containers defined in vars/containers
+  hosts: all
+  sudo: yes
+  gather_facts: False
+
+  vars:
+    containers:
+      - dr.a8.nl/cryptobox/scratch
+      - dr.a8.nl/cryptobox/coregi
+      - busybox
+      #- centos
+
+  roles:
+    - loadingdocker

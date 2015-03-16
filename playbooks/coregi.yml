@@ -1,0 +1,28 @@
+---
+
+- name: CoreGI monitoring package
+  hosts: all
+  sudo: yes
+  gather_facts: True
+
+  tasks:
+    - name: create tools directory
+      file: path=/home/core/tools state=directory
+
+    - name: checkout CoreGI
+      git: repo=https://github.com/erikdejonge/CoreGI.git dest=/home/core/tools/coregi update=yes
+      register: io
+
+
+- name: CoreGI monitoring operations
+  hosts: masters
+  sudo: yes
+  gather_facts: False
+
+  tasks:
+    - name: stop fleet
+      shell: fleetctl destroy coregi.service chdir=/home/core/tools/coregi/services
+      
+    - name: start with fleet
+      shell: fleetctl start coregi.service chdir=/home/core/tools/coregi/services
+      

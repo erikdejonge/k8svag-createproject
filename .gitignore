@@ -1,3 +1,16 @@
+.idea
+fixedhosts.txt
+hosts
+Vagrantfile
+keys/secure/vagrantsecure.pub
+keys/secure/vagrantsecure
+configscripts/master.yml
+configscripts/node.yml
+configscripts/user-data*
+config/gateway.txt
+config/token.txt
+config/updatetoken.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

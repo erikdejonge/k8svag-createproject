@@ -1,0 +1,32 @@
+---
+
+- name: swap keys
+  hosts: all
+  gather_facts: False
+  sudo: true
+
+  tasks:
+    - name: Check if keyswap is needed
+      stat: path=/home/core/.swappedkeys
+      register: need_keyswap
+      ignore_errors: True
+
+    - name: Remove /home/core/.ssh/authorized_keys
+      file: path=/home/core/.ssh/authorized_keys state=absent
+      when: need_keyswap | failed
+
+    - name: Remove /home/core/.ssh/authorized_keys.d/coreos-cloudinit
+      file: path=/home/core/.ssh/authorized_keys.d/coreos-cloudinit state=absent
+      when: need_keyswap | failed
+
+    - name: Remove /home/core/.ssh/authorized_keys.d
+      file: path=/home/core/.ssh/authorized_keys.d state=absent
+      when: need_keyswap | failed
+
+    - name: new key
+      authorized_key: user=core key="{{ lookup('file', '../keys/secure/vagrantsecure.pub') }}"
+      when: need_keyswap | failed
+
+    - name: add .swappedkeys file
+      shell: ls > /home/core/.swappedkeys
+      when: need_keyswap | failed
