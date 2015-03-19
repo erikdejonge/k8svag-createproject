@@ -1,9 +1,11 @@
 #!/bin/sh
 sudo date
+
 function _killallpythonprocs() {
   killall python3 2> /dev/null;  killall Python 2> /dev/null;  killall python3 2> /dev/null;  killall Python 2> /dev/null;  killall pypy 2> /dev/null;  killall python3 2> /dev/null;  killall Python3 2> /dev/null;  killall python3 2> /dev/null;  killall Python3 2> /dev/null;  killall pypy3 2> /dev/null;
 }
 _killallpythonprocs
+
 rm -f hosts
 rm -f ./configscripts/user-data*
 
