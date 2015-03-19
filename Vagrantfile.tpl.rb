@@ -13,7 +13,7 @@ $enable_serial_logging = false
 $share_home = false
 $vm_gui = false
 $vm_memory = x
-$vm_cpus = VMCPUS
+$vm_cpus = x
 $etcdaddress = nil
 # Attempt to apply the deprecated environment variable NUM_INSTANCES to
 # $num_instances while allowing config.rb to override it
