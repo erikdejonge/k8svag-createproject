@@ -54,7 +54,12 @@ coreos:
     group: alpha
     reboot-strategy: "reboot"
     server: https://active8.update.core-os.net/v1/update/
-
+  fleet:
+    etcd-servers: http://<master-private-ip>:4001
+    metadata: "role=node"
+  flannel:
+    interface: eth1
+    etcd_endpoints: http://<master-private-ip>:4001
   units:
     - name: etcd.service
       mask: true

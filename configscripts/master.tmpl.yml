@@ -72,7 +72,11 @@ coreos:
     group: alpha
     reboot-strategy: "reboot"
     server: https://active8.update.core-os.net/v1/update/
-
+  fleet:
+    etcd-servers: http://localhost:4001
+    metadata: "role=master"
+  flannel:
+    interface: eth1
   units:
     - name: setup-network-environment.service
       command: start
@@ -113,27 +117,9 @@ coreos:
         Restart=always
         RestartSec=10s
 
-    - name: fleet.socket
-      command: start
-      content: |
-        [Socket]
-        ListenStream=/var/run/fleet.sock
 
     - name: fleet.service
       command: start
-      content: |
-        [Unit]
-        Description=fleet daemon
-        Wants=etcd.service
-        After=etcd.service
-        Wants=fleet.socket
-        After=fleet.socket
-        [Service]
-        Environment="FLEET_ETCD_SERVERS=http://127.0.0.1:4001"
-        Environment="FLEET_METADATA=role=master"
-        ExecStart=/usr/bin/fleetd
-        Restart=always
-        RestartSec=10s
 
     - name: etcd-waiter.service
       command: start
