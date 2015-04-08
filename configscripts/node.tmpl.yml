@@ -138,7 +138,7 @@ coreos:
         --logtostderr=true
         Restart=always
         RestartSec=10
-        
+
     - name: kube-kubelet.service
       command: start
       content: |

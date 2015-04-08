@@ -201,6 +201,7 @@ coreos:
             After=docker-cache.service flanneld.service
             [Service]
             Environment=DOCKER_OPTS='--registry-mirror=http://<master-private-ip>:5000'
+
     - name: settimezone.service
       command: start
       content: |
