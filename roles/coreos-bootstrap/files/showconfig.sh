@@ -35,3 +35,14 @@ systemctl is-enabled foobar.service\tUsed to check whether a service is configur
 ls /etc/systemd/system/*.wants/foobar.service\tUsed to list what levels this service is configured on or off
 """
 
+sudo systemctl status setup-network-environment.service
+sudo systemctl status etcd.service
+sudo systemctl status fleet.service
+sudo systemctl status etcd-waiter.service
+sudo systemctl status flanneld.service
+sudo systemctl status docker-cache.service
+sudo systemctl status docker.service
+sudo systemctl status kube-apiserver.service
+sudo systemctl status kube-controller-manager.service
+sudo systemctl status kube-scheduler.service
+sudo systemctl status kube-register.service
