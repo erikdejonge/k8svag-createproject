@@ -1,4 +1,5 @@
 #cloud-config
+
 ---
 hostname: "hostname"
 
@@ -16,20 +17,18 @@ write_files:
       #netmask 255.255.255.0
       #DNS=8.8.8.8
       #DNS=8.8.4.4
-
-  - path: /etc/environment
-    permissions: '0644'
-    content: |+
-      #COREOS_PUBLIC_IPV4=xxxx
-      #COREOS_PRIVATE_IPV4=xxx
-
-  - path: /etc/profile.d/etcd-envvars.sh
-    permissions: '0644'
-    owner: root
-    content: |
-      #export ETCDCTL_PEERS="http://192.168.14.41:4001"
-      #export FLEETCTL_ENDPOINT="http://192.168.14.41:4001"
-      #export DEFAULT_IPV4=192.168.14.41
+#  - path: /etc/environment
+#    permissions: '0644'
+#    content: |+
+#      #COREOS_PUBLIC_IPV4=xxxx
+#      #COREOS_PRIVATE_IPV4=xxx
+#  - path: /etc/profile.d/etcd-envvars.sh
+#    permissions: '0644'
+#    owner: root
+#    content: |
+#      #export ETCDCTL_PEERS="http://192.168.14.41:4001"
+#      #export FLEETCTL_ENDPOINT="http://192.168.14.41:4001"
+#      #export DEFAULT_IPV4=192.168.14.41
 
   - path: /etc/resolv.conf
     permissions: '0644'
@@ -54,29 +53,21 @@ coreos:
     group: alpha
     reboot-strategy: "reboot"
     server: https://active8.update.core-os.net/v1/update/
+
   fleet:
     etcd-servers: http://<master-private-ip>:4001
     metadata: "role=node"
+
   flannel:
-    interface: eth1
+    interface: ens34
     etcd_endpoints: http://<master-private-ip>:4001
+
   units:
     - name: etcd.service
       mask: true
 
     - name: fleet.service
       command: start
-      content: |
-        [Unit]
-        Description=fleet daemon
-        Wants=fleet.socket
-        After=fleet.socket
-        [Service]
-        Environment="FLEET_ETCD_SERVERS=http://<master-private-ip>:4001"
-        Environment="FLEET_METADATA=role=node"
-        ExecStart=/usr/bin/fleetd
-        Restart=always
-        RestartSec=10s
 
     - name: flanneld.service
       command: start
@@ -134,7 +125,6 @@ coreos:
         Documentation=https://github.com/GoogleCloudPlatform/kubernetes
         Requires=setup-network-environment.service
         After=setup-network-environment.service
-
         [Service]
         ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.11.0/bin/linux/amd64/kube-proxy
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-proxy
@@ -152,7 +142,6 @@ coreos:
         Documentation=https://github.com/GoogleCloudPlatform/kubernetes
         Requires=setup-network-environment.service
         After=setup-network-environment.service
-
         [Service]
         EnvironmentFile=/etc/network-environment
         ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.11.0/bin/linux/amd64/kubelet

@@ -33,7 +33,6 @@ systemctl enable foobar.service\tTurn the service on, for start at next boot, or
 systemctl disable foobar.service\tTurn the service off for the next reboot, or any other trigger.
 systemctl is-enabled foobar.service\tUsed to check whether a service is configured to start or not in the current environment.
 ls /etc/systemd/system/*.wants/foobar.service\tUsed to list what levels this service is configured on or off
-"""
 
 sudo systemctl status setup-network-environment.service
 sudo systemctl status etcd.service
@@ -46,3 +45,6 @@ sudo systemctl status kube-apiserver.service
 sudo systemctl status kube-controller-manager.service
 sudo systemctl status kube-scheduler.service
 sudo systemctl status kube-register.service
+
+journalctl -xe
+"""
