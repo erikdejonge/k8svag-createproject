@@ -45,10 +45,11 @@
   when: need_pip | failed
 
 
-- name: Upload showconfig.sh to core
-  copy: src=showconfig.sh dest=/home/core mode=0744 owner=core
-  when: need_bootstrap | failed
+- name: Delete showconfig.sh
+  file: path=/home/core/showconfig.sh state=absent
 
+- name: Upload showconfig.sh
+  copy: src=showconfig.sh dest=/home/core mode=0744 owner=core
 
 - name: make .bootstrapped file
   shell: date > /home/core/.bootstrapped

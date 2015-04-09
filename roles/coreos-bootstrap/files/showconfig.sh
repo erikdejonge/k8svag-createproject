@@ -1,43 +1,44 @@
 #!/bin/sh
-
-cat  /etc/environment
-cat /etc/systemd/network/static.network | grep Address
-
+echo -e "\033[0;34mserver:\033[0m"
+echo -e "name: \033[0;91m"`hostname`"\033[0m"
+version=`cat /etc/os-release | grep PRETTY_NAME | awk -F'=' '{print $2}' | tr -d '"'`
+echo -e "version: \033[0;95m"`echo $version | awk '{print $1}'`"\033[0m\033[0;94m "`echo $version | awk '{print $2}'`"\033[0m"
+echo 'ip:' `cat /etc/systemd/network/static.network | grep Address | awk -F'=' '{print $2}' | tr -d '"'`
+echo 'flannel:' `cat /run/flannel/subnet.env | grep SUBNET | awk -F'=' '{print $2}' | tr -d '"'`
 echo
-echo "cat /etc/systemd/network/static.network | grep Address"
-echo "grep DISCOVERY /run/systemd/system/etcd.service.d/20-cloudinit.conf"
-echo "cat /var/lib/coreos-vagrant/vagrantfile-user-data"
-echo "sudo coreos-cloudinit --from-file /var/lib/coreos-vagrant/vagrantfile-user-data"
-echo "cat /var/run/systemd/system/etcd.service.d/*.conf"
-echo "cat /var/run/systemd/system/fleet.service.d/*.conf"
-echo "cat ls -las /var/run/systemd/system"
-echo "curl -L http://127.0.0.1:4001/version"
-echo "curl -L http://127.0.0.1:7001/version"
-echo "curl -L http://127.0.0.1:4001/v2/keys/mykey"
-echo "cat /etc/os-release"
-echo "sudo systemctl status etcd"
-echo "sudo systemctl restart etcd"
-echo "sudo systemctl restart fleet"
-echo "fleetctl list-machines"
-echo "cat /run/flannel/subnet.env"
-echo -e """
-SystemD cheatsheet
-systemctl start foobar.service\tUsed to start a service (not reboot persistent)
-systemctl stop foobar.service\tUsed to stop a service (not reboot persistent)
-systemctl restart foobar.service\tUsed to stop and then start a service
-systemctl reload foobar.service\tWhen supported, reloads the config file without interrupting pending operations.
-systemctl condrestart foobar.service\tRestarts if the service is already running.
-systemctl status foobar.service\tTells whether a service is currently running.
-ls /lib/systemd/system/*.service /etc/systemd/system/*.service\tUsed to list the services that can be started or stopped
-systemctl enable foobar.service\tTurn the service on, for start at next boot, or other trigger.
-systemctl disable foobar.service\tTurn the service off for the next reboot, or any other trigger.
-systemctl is-enabled foobar.service\tUsed to check whether a service is configured to start or not in the current environment.
-ls /etc/systemd/system/*.wants/foobar.service\tUsed to list what levels this service is configured on or off
+echo -e "\033[0;34msystemd status:\033[0m"
 
-cat /var/lib/coreos-vagrant/vagrantfile-user-data
-cat /etc/os-release | grep VERSION_ID
-cat /etc/systemd/network/static.network
-sudo coreos-cloudinit --from-file /var/lib/coreos-vagrant/vagrantfile-user-data
+#!/bin/sh
+function _dostatus() {
+  stat=$(sudo systemctl status $1 | grep active | xargs echo)
 
-journalctl -xe
-"""
+  if [ -z "$stat" ]
+  then
+    echo -e $1": \033[0;31mfailed\033[0m"
+  else
+    echo -e $1": \033[0;32mactive\033[0m"
+  fi;
+}
+function _units() {
+
+  for unit in $units; do
+    _dostatus $unit
+  done;
+}
+function _failedunits() {
+
+  for funit in $funits; do
+    sudo systemctl status $funit
+  done;
+}
+function _status() {
+   units=$(systemctl list-units | grep loaded | grep ".service" | grep -v systemd | grep -v "@" | awk '{print $1}')
+   _units
+   funits=$(systemctl list-units | grep loaded | grep -v active | grep -v Reflects| awk '{print $1}')
+
+   if [ "$funits" ]; then
+       echo -e "\n\033[0;31m== Failed ==\033[0m"
+   fi
+   _failedunits
+}
+_status
