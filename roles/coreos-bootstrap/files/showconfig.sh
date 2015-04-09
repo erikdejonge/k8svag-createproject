@@ -1,21 +1,21 @@
 #!/bin/sh
-echo -e "\033[0;34mserver:\033[0m"
+echo -e "\033[0;34midentity:\033[0m"
 echo -e "name: \033[0;91m"`hostname`"\033[0m"
 version=`cat /etc/os-release | grep PRETTY_NAME | awk -F'=' '{print $2}' | tr -d '"'`
 echo -e "version: \033[0;95m"`echo $version | awk '{print $1}'`"\033[0m\033[0;94m "`echo $version | awk '{print $2}'`"\033[0m"
 echo 'ip:' `cat /etc/systemd/network/static.network | grep Address | awk -F'=' '{print $2}' | tr -d '"'`
 echo 'flannel:' `cat /run/flannel/subnet.env | grep SUBNET | awk -F'=' '{print $2}' | tr -d '"'`
-echo
-echo -e "\033[0;34msystemd status:\033[0m"
+echo -e "\033[0;34msystemd:\033[0m"
 
 function _dostatus() {
   stat=$(sudo systemctl status $1 | grep active | xargs echo)
-
+  name=$1
+  name=${name/.service/}
   if [ -z "$stat" ]
   then
-    echo -e $1": \033[0;31mfailed\033[0m"
+    echo -e "\033[0;31m$name\033[0m"
   else
-    echo -e $1": \033[0;32mactive\033[0m"
+    echo -e "\033[0;32m$name\033[0m"
   fi;
 }
 function _units() {
