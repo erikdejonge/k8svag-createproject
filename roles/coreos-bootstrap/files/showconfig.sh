@@ -8,7 +8,6 @@ echo 'flannel:' `cat /run/flannel/subnet.env | grep SUBNET | awk -F'=' '{print $
 echo
 echo -e "\033[0;34msystemd status:\033[0m"
 
-#!/bin/sh
 function _dostatus() {
   stat=$(sudo systemctl status $1 | grep active | xargs echo)
 
