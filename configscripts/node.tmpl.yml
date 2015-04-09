@@ -62,7 +62,7 @@ coreos:
 
   flannel:
     interface: ens34
-    etcd_endpoints: http://<master-private-ip>:4001
+    etcd-endpoints: http://<master-private-ip>:4001
 
   units:
     - name: etcd.service

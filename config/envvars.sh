@@ -44,8 +44,11 @@ function _failedunits() {
 function _status() {
    units=$(systemctl list-units | grep loaded | grep ".service" | grep -v systemd | grep -v "@" | awk '{print $1}')
    _units
-   echo -e "\n\033[0;31m== Failed ==\033[0m"
+
    funits=$(systemctl list-units | grep loaded | grep -v active | grep -v Reflects| awk '{print $1}')
+   if [ "$funits" ]; then
+       echo -e "\n\033[0;31m== Failed ==\033[0m"
+   fi
    _failedunits
 }
 

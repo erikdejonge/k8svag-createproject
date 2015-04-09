@@ -34,7 +34,6 @@ systemctl disable foobar.service\tTurn the service off for the next reboot, or a
 systemctl is-enabled foobar.service\tUsed to check whether a service is configured to start or not in the current environment.
 ls /etc/systemd/system/*.wants/foobar.service\tUsed to list what levels this service is configured on or off
 
-
 cat /var/lib/coreos-vagrant/vagrantfile-user-data
 cat /etc/os-release | grep VERSION_ID
 cat /etc/systemd/network/static.network
