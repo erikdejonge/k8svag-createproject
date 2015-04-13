@@ -219,6 +219,7 @@ coreos:
         --portal_net=10.100.0.0/16 \
         --etcd_servers=http://127.0.0.1:4001 \
         --public_address_override=<master-private-ip> \
+        --cloud_provider=vagrant \
         --logtostderr=true
         Restart=always
         RestartSec=10
