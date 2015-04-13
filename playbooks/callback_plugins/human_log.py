@@ -24,7 +24,7 @@ def human_log(res):
                 if "invocation" in str(field):
                     if len(res[field]["module_args"]) > 0:
                         if res[field]["module_name"] not in ["shell"]:
-                            outputmsg = u'{0}: {1}\n'.format(res[field]["module_name"], str("\n" + " " * (2 + len(res[field]["module_name"]))).join(res[field]["module_args"].split(" ")))
+                            outputmsg = u'{0}: {1}\n'.format(res[field]["module_name"], str("\n" + " " * (2 + len(res[field]["module_name"]))).join(res[field]["module_args"].split()))
 
                             if outputmsg is not None:
                                 print "\033[91m" + outputmsg, "\033[0m"
