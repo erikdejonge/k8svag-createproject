@@ -1,5 +1,6 @@
 #!/bin/sh
 alias bootj="sudo journalctl --boot"
+alias cloudconfig="sudo coreos-cloudinit --from-file /var/lib/coreos-vagrant/vagrantfile-user-data"
 alias hist="history"
 alias jetcd="journalctl -u etcd"
 alias jflannel="journalctl -u flannels"
@@ -14,6 +15,7 @@ alias stetcd="sudo systemctl status etcd"
 alias stflannel="sudo systemctl status flanneld"
 alias stfleet="sudo systemctl status fleet"
 alias synctime="sudo systemctl stop ntpd.service;sudo ntpdate pool.ntp.org;sudo systemctl start ntpd.service"
+
 function _dostatus() {
   stat=$(sudo systemctl status $1 | grep active | xargs echo)
 
