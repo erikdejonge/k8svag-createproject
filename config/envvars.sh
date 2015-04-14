@@ -18,7 +18,7 @@ alias stfleet="sudo systemctl status fleet"
 alias synctime="sudo systemctl stop ntpd.service;sudo ntpdate pool.ntp.org;sudo systemctl start ntpd.service"
 
 function _dostatus() {
-  stat=$(sudo systemctl status $1 | grep active | xargs echo)
+  stat=$(sudo systemctl status $1 | grep active | xargs -0 echo)
 
   if [ -z "$stat" ]
   then
@@ -40,9 +40,9 @@ function _failedunits() {
   done;
 }
 function _status() {
-   units=$(systemctl list-units | grep loaded | grep ".service" | grep -v systemd | grep -v "@" | awk '{print $1}')
+   units=$(systemctl list-units | sed 's/[\d128-\d255]//g' | grep loaded | grep ".service" | grep -v systemd | grep -v "@" | awk '{print $1}')
    _units
-   funits=$(systemctl list-units | grep loaded | grep -v active | grep -v Reflects| awk '{print $1}')
+   funits=$(systemctl list-units | sed 's/[\d128-\d255]//g' | grep loaded | grep -v active | grep -v Reflects| awk '{print $1}')
 
    if [ "$funits" ]; then
        echo -e "\n\033[0;31m== Failed ==\033[0m"
