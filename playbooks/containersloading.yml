@@ -8,7 +8,6 @@
   vars:
     containers:
       - dr.a8.nl/cryptobox/scratch
-      - dr.a8.nl/cryptobox/coregi
       - busybox
       #- centos
 
