@@ -17,7 +17,8 @@
     "selector": {
       "name": "nginx"
     },
-    "portalIP": "",
+    "portalIP": "192.168.14.41",
+    "publicIPs": ["192.168.14.42", "192.168.14.43", "192.168.14.44"],
     "sessionAffinity": "None"
   },
   "status": {}
