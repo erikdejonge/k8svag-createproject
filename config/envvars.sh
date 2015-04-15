@@ -1,7 +1,6 @@
 #!/bin/sh
 alias bootj="sudo journalctl --boot"
 alias cloudconfig="sudo coreos-cloudinit --from-file /var/lib/coreos-vagrant/vagrantfile-user-data"
-alias showcloudconfig='cat /var/lib/coreos-vagrant/vagrantfile-user-data'
 alias hist="history"
 alias jetcd="journalctl -u etcd"
 alias jflannel="journalctl -u flannels"
@@ -11,6 +10,7 @@ alias locate="sudo find / | grep $1"
 alias lsunits="systemctl list-units"
 alias lsunitsfl="fleetctl list-units"
 alias lsmachfl="fleetctl list-machines"
+alias showcloudconfig='cat /var/lib/coreos-vagrant/vagrantfile-user-data'
 alias stdocker="sudo systemctl status docker"
 alias stetcd="sudo systemctl status etcd"
 alias stflannel="sudo systemctl status flanneld"
