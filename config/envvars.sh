@@ -1,6 +1,7 @@
 #!/bin/sh
 alias bootj="sudo journalctl --boot"
 alias cloudconfig="sudo coreos-cloudinit --from-file /var/lib/coreos-vagrant/vagrantfile-user-data"
+alias jerr="sudo journalctl -f -p err; journalctl -xe"
 alias hist="history"
 alias jetcd="journalctl -u etcd"
 alias jflannel="journalctl -u flannels"
