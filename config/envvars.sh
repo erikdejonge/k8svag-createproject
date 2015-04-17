@@ -16,6 +16,8 @@ alias stdocker="sudo systemctl status docker"
 alias stetcd="sudo systemctl status etcd"
 alias stflannel="sudo systemctl status flanneld"
 alias stfleet="sudo systemctl status fleet"
+alias stkubenode="sudo systemctl status kube-kubelet; sudo systemctl status kube-proxy"
+alias stkubemaster="sudo systemctl status kube-apiserver; sudo systemctl status kube-controller-manager;  sudo systemctl status kube-register; sudo systemctl status kube-scheduler"
 alias synctime="sudo systemctl stop ntpd.service;sudo ntpdate pool.ntp.org;sudo systemctl start ntpd.service"
 
 function _dostatus() {
