@@ -1,25 +1,21 @@
 {
-  "kind": "Service",
   "apiVersion": "v1beta3",
+  "kind": "Service",
+  "publicIPs": ["192.168.14.42", "192.168.14.43", "192.168.14.44"],
   "metadata": {
-    "name": "nginx-example",
-    "creationTimestamp": null
+    "name": "nginx-example"
   },
   "spec": {
     "ports": [
       {
-        "name": "",
-        "protocol": "TCP",
+
         "port": 8000,
-        "targetPort": 80
+        "targetPort": 80,
+        "protocol": "TCP"
       }
     ],
     "selector": {
       "name": "nginx"
-    },
-    "portalIP": "192.168.14.41",
-    "publicIPs": ["192.168.14.42", "192.168.14.43", "192.168.14.44"],
-    "sessionAffinity": "None"
-  },
-  "status": {}
+    }
+  }
 }

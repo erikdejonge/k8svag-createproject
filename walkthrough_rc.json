@@ -1,12 +1,8 @@
 {
-  "kind": "ReplicationController",
   "apiVersion": "v1beta3",
+  "kind": "ReplicationController",
   "metadata": {
-    "name": "nginx-controller",
-    "creationTimestamp": null,
-    "labels": {
-      "name": "nginx"
-    }
+    "name": "nginx-controller"
   },
   "spec": {
     "replicas": 2,
@@ -15,35 +11,23 @@
     },
     "template": {
       "metadata": {
-        "creationTimestamp": null,
         "labels": {
           "name": "nginx"
         }
       },
       "spec": {
-        "volumes": null,
         "containers": [
           {
             "name": "nginx",
-            "image": "dockerfile/nginx",
+            "image": "nginx",
             "ports": [
               {
-                "containerPort": 80,
-                "protocol": "TCP"
+                "containerPort": 80
               }
-            ],
-            "resources": {},
-            "terminationMessagePath": "/dev/termination-log",
-            "imagePullPolicy": "IfNotPresent",
-            "capabilities": {}
+            ]
           }
-        ],
-        "restartPolicy": "Always",
-        "dnsPolicy": "ClusterFirst"
+        ]
       }
     }
-  },
-  "status": {
-    "replicas": 0
   }
 }
