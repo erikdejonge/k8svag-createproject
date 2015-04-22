@@ -9,7 +9,7 @@ if [-e $HOME/.bootstrapped]; then
   exit 0
 fi
 
-PYPY_VERSION=2.4.0
+PYPY_VERSION=2.5.1
 
 wget https://bitbucket.org/pypy/pypy/downloads/pypy-2.5.1-linux64.tar.bz2
 
