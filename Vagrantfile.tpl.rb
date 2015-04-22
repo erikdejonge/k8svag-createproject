@@ -130,6 +130,7 @@ Vagrant.configure('2') do |config|
           data = YAML.load(IO.readlines('configscripts/node.yml')[1..-1].join)
         end
         data['coreos']['update']['group'] = updategroup
+        data['etcd2']['initial-cluster-token'] = updategroup
         gateway = open('config/gateway.txt').read
         environ = 'COREOS_PUBLIC_IPV4='+pubipaddress+"\nCOREOS_PRIVATE_IPV4="+privipaddress
         envvars = open('config/envvars.sh').read

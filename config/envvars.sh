@@ -8,9 +8,11 @@ alias jflannel="journalctl -u flannels"
 alias jfleet="journalctl -u fleet"
 alias jdocker="journalctl -u docker"
 alias locate="sudo find / | grep $1"
+alias lsfleet="sudo fleetctl list-machines; echo; sudo fleetctl list-units"
 alias lsunits="systemctl list-units"
-alias lsunitsfl="fleetctl list-units"
-alias lsmachfl="fleetctl list-machines"
+alias lsunitsfl="sudo fleetctl list-units"
+alias lsmachfl="sudo fleetctl list-machines"
+
 alias showcloudconfig='cat /var/lib/coreos-vagrant/vagrantfile-user-data'
 alias stdocker="sudo systemctl status docker"
 alias stetcd="sudo systemctl status etcd"

@@ -49,7 +49,16 @@ write_files:
       restrict 127.0.0.1
       restrict [::1]
 
-
+  - path: /opt/bin/wupiao
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      # [w]ait [u]ntil [p]ort [i]s [a]ctually [o]pen
+      [ -n "$1" ] && \
+        until curl -o /dev/null -sIf http://${1}; do \
+          sleep 1 && echo .;
+        done;
+      exit $?
 coreos:
   update:
     group: alpha
@@ -63,35 +72,16 @@ coreos:
   flannel:
     interface: ens34
     etcd-endpoints: http://<master-private-ip>:4001
-
+    
+  etcd2:
+    name: <name-node>
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    initial-cluster: __ETCD_SEED_CLUSTER__
+    proxy: on
+    
   units:
     - name: etcd.service
       mask: true
-
-    - name: fleet.service
-      command: start
-
-    - name: flanneld.service
-      command: start
-      drop-ins:
-        - name: 50-network-config.conf
-          content: |
-            [Service]
-            ExecStartPre=/bin/bash -c "until /usr/bin/etcdctl --peers=http://<master-private-ip>:4001 ls /coreos.com/network; do sleep 2; done"
-            ExecStartPre=/usr/bin/etcdctl --peers=http://<master-private-ip>:4001 set /coreos.com/network/config '{"Network":"10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
-
-    - name: docker.service
-      command: start
-      drop-ins:
-        - name: 51-docker-mirror.conf
-          content: |
-            [Unit]
-            # making sure that flanneld finished startup, otherwise containers
-            # won't land in flannel's network...
-            Requires=flanneld.service
-            After=flanneld.service
-            [Service]
-            Environment=DOCKER_OPTS='--registry-mirror=http://<master-private-ip>:5000'
 
     - name: setup-network-environment.service
       command: start
@@ -119,6 +109,34 @@ coreos:
         RemainAfterExit=yes
         Type=oneshot
 
+    - name: flanneld.service
+      command: start
+      drop-ins:
+        - name: 50-network-config.conf
+          content: |
+            [Unit]
+            Requires=etcd2.service
+            [Service]
+            ExecStartPre=/usr/bin/etcdctl --peers=http://<master-private-ip>:4001 set /coreos.com/network/config '{"Network":"10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
+
+    - name: fleet.service
+      command: start
+
+    - name: docker.service
+      command: start
+      drop-ins:
+        - name: 51-docker-mirror.conf
+          content: |
+            [Unit]
+            # making sure that flanneld finished startup, otherwise containers
+            # won't land in flannel's network...
+            Requires=flanneld.service
+            After=flanneld.service
+            [Service]
+            Environment=DOCKER_OPTS='--registry-mirror=http://<master-private-ip>:5000'
+            ExecStartPre=/opt/bin/wupiao <master-private-ip>:5000
+            
+    - name: setup-network-environment.service
     - name: kube-proxy.service
       command: start
       content: |
@@ -130,6 +148,7 @@ coreos:
         [Service]
         ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.15.0/bin/linux/amd64/kube-proxy
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-proxy
+        ExecStartPre=/opt/bin/wupiao <master-private-ip>:8080
         ExecStart=/opt/bin/kube-proxy \
         --master=<master-private-ip>:8080 \
         --logtostderr=true
@@ -142,19 +161,22 @@ coreos:
         [Unit]
         Description=Kubernetes Kubelet
         Documentation=https://github.com/GoogleCloudPlatform/kubernetes
-        Requires=setup-network-environment.service
-        After=setup-network-environment.service
         [Service]
         EnvironmentFile=/etc/network-environment
         ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.15.0/bin/linux/amd64/kubelet
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kubelet
-        ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.15.0/bin/linux/amd64/kubectl
-        ExecStartPre=/usr/bin/chmod +x /opt/bin/kubectl
+        ExecStartPre=/opt/bin/wupiao <master-private-ip>:8080
         ExecStart=/opt/bin/kubelet \
         --address=0.0.0.0 \
         --port=10250 \
         --hostname_override=$public_ipv4 \
         --api_servers=<master-private-ip>:8080 \
-        --logtostderr=true
+        --allow_privileged=true \
+        --cluster_dns=10.100.0.10 \
+        --cluster_domain="k8s.local" \
+        --logtostderr=true \
+        --cadvisor_port=4194 \       
+        --healthz_bind_address=0.0.0.0 \
+        --healthz_port=10248
         Restart=always
         RestartSec=10
