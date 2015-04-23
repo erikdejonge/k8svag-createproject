@@ -92,14 +92,12 @@ coreos:
     interface: ens34
 
   etcd2:
-    name: <name-node>
-    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
-    advertise-client-urls: http://<master-private-ip>:2379,http://<master-private-ip>:4001
-    initial-cluster-token: k8s_etcd
-    listen-peer-urls: http://<master-private-ip>:2380,http://<master-private-ip>:7001
-    initial-advertise-peer-urls: http://<master-private-ip>:2380
-    initial-cluster: http://<master-private-ip>:2380
-    initial-cluster-state: new
+    listen-client-urls: http://0.0.0.0:2379
+    advertise-client-urls: http://<master-private-ip>:2379
+    listen-peer-urls: http://<master-private-ip>:2380
+
+
+
 
   units:
     - name: setup-network-environment.service
