@@ -130,13 +130,13 @@ Vagrant.configure('2') do |config|
           data = YAML.load(IO.readlines('configscripts/node.yml')[1..-1].join)
         end
         data['coreos']['update']['group'] = updategroup
-        data['coreos']['etcd2']['initial-cluster-token'] = updategroup
+        #data['coreos']['etcd2']['initial-cluster-token'] = updategroup
         gateway = open('config/gateway.txt').read
         environ = 'COREOS_PUBLIC_IPV4='+pubipaddress+"\nCOREOS_PRIVATE_IPV4="+privipaddress
         envvars = open('config/envvars.sh').read
         envvars = envvars.strip + "\n"
-        envvars += "export ETCDCTL_PEERS='http://"+$etcdaddress+":4001'\n"
-        envvars += "export FLEETCTL_ENDPOINT='http://"+$etcdaddress+":4001'\n"
+        envvars += "export ETCDCTL_PEERS='http://"+$etcdaddress+":2379'\n"
+        envvars += "export FLEETCTL_ENDPOINT='http://"+$etcdaddress+":2379'\n"
         envvars += "export DEFAULT_IPV4='"+pubipaddress+"'\n\n"
         data['write_files'][0]['content'] = "[Match]\nName=ens34\n\n[Network]\nAddress="+pubipaddress+"/24\nGateway="+gateway+"\nDNS=8.8.8.8\nDNS=8.8.4.4\n\n"
         data['write_files'][1]['content'] = environ

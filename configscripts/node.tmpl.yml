@@ -28,8 +28,8 @@ write_files:
     permissions: '0644'
     owner: root
     content: |
-      #export ETCDCTL_PEERS="http://192.168.14.41:4001"
-      #export FLEETCTL_ENDPOINT="http://192.168.14.41:4001"
+      #export ETCDCTL_PEERS="http://192.168.14.41:2379"
+      #export FLEETCTL_ENDPOINT="http://192.168.14.41:2379"
       #export DEFAULT_IPV4=192.168.14.41
 
   - path: /etc/resolv.conf
@@ -66,16 +66,16 @@ coreos:
     server: https://active8.update.core-os.net/v1/update/
 
   fleet:
-    etcd-servers: http://<master-private-ip>:4001
+    etcd-servers: http://<master-private-ip>:2379
     metadata: "role=node"
 
   flannel:
     interface: ens34
-    etcd-endpoints: http://<master-private-ip>:4001
+    etcd-endpoints: http://<master-private-ip>:2379
     
   etcd2:
     name: <name-node>
-    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:2379
     initial-cluster: __ETCD_SEED_CLUSTER__
     proxy: on
     
@@ -117,7 +117,7 @@ coreos:
             [Unit]
             Requires=etcd2.service
             [Service]
-            ExecStartPre=/usr/bin/etcdctl --peers=http://<master-private-ip>:4001 set /coreos.com/network/config '{"Network":"10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
+            ExecStartPre=/usr/bin/etcdctl --peers=http://<master-private-ip>:2379 set /coreos.com/network/config '{"Network":"10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
 
     - name: fleet.service
       command: start

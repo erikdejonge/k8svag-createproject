@@ -28,15 +28,15 @@ write_files:
     permissions: '0644'
     owner: root
     content: |
-      #export ETCDCTL_PEERS="http://192.168.14.41:4001"
-      #export FLEETCTL_ENDPOINT="http://192.168.14.41:4001"
+      #export ETCDCTL_PEERS="http://192.168.14.41:2379"
+      #export FLEETCTL_ENDPOINT="http://192.168.14.41:2379"
       #export DEFAULT_IPV4=192.168.14.41
 
   - path: /opt/bin/waiter.sh
     owner: root
     content: |
       #! /usr/bin/bash
-      until curl http://127.0.0.1:4001/v2/machines; do sleep 2; done
+      until curl http://127.0.0.1:2379/v2/machines; do sleep 2; done
 
   - path: /etc/resolv.conf
     permissions: '0644'
@@ -85,19 +85,16 @@ coreos:
     server: https://active8.update.core-os.net/v1/update/
 
   fleet:
-    etcd-servers: http://localhost:4001
+    etcd-servers: http://localhost:2379
     metadata: "role=master"
 
   flannel:
     interface: ens34
 
   etcd2:
-    listen-client-urls: http://0.0.0.0:2379
-    advertise-client-urls: http://<master-private-ip>:2379
-    listen-peer-urls: http://<master-private-ip>:2380
-
-
-
+    listen-client-urls: http://127.0.0.1:4001, http://127.0.0.1:2379
+    advertise-client-urls: http://<master-private-ip>:4001, http://<master-private-ip>:2379
+    listen-peer-urls: http://<master-private-ip>:7001, http://<master-private-ip>:2380
 
   units:
     - name: setup-network-environment.service
@@ -197,7 +194,7 @@ coreos:
           --kubelet_https=true \
           --secure_port=6443 \
           --portal_net=10.100.0.0/16 \
-          --etcd_servers=http://127.0.0.1:4001 \
+          --etcd_servers=http://127.0.0.1:2379 \
           --public_address_override=<master-private-ip> \
           --cloud_provider=<cloud-provider> \
           --logtostderr=true \
