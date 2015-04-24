@@ -1,4 +1,0 @@
-
-cluster
-
-/kubectl.sh --kubeconfig="./.kubeconfig" config view
